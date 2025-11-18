@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.numberguess;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>数あてゲーム　ランキング</title>
+	<style>
+		th,
+		td {
+			border: solid 1px;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>ランキング</h1>
+
+	<table>
+		<tr>
+			<th>順位</th>
+			<th>名前</th>
+			<th>スコア</th>
+			<th>難易度</th>
+			<th>プレイ日時</th>
+		</tr>
+		<tr th:each="r, stat : ${scores}">
+			<td th:text="${stat.count}"></td>
+			<td th:text="${r.playerName}"></td>
+			<td th:text="${r.score}"></td>
+			<td th:text="${r.difficulty}"></td>
+			<td th:text="${r.playedAt}"></td>
+		</tr>
+	</table>
+
+	<p>
+
+		<a href="/">ゲームに戻る</a>
+	</p>
+</body>
+
+</html>
