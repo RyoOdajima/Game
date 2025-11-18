@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>数あてゲーム</title>
+	<title>数あてゲーム（難易度・ヒント・スコア対応）</title>
 	<style>
 		th,
 		td {
@@ -12,7 +12,7 @@
 		}
 
 		table {
-			border-collapse: collaplse;
+			border-collapse: collapse;
 			/*セルの線を重ねる*/
 		}
 	</style>
@@ -20,22 +20,69 @@
 
 <body>
 	<h1>数あてゲーム</h1>
+
+	<!-- 難易度選択 -->
+	<h2>難易度選択</h2>
+	<form action="/start" method="post">
+		<label>難易度：
+			<select name="difficulty">
+				<option value="EASY" th:selected="${currentDifficulty} == 'EASY'">EASY（1～50）</option>
+				<option value="NORMAL" th:selected="${currentDifficulty} == 'NORMAL'">NORMAL（1～100）</option>
+				<option value="HARD" th:selected="${currentDifficulty} == 'HARD'">HARD（1～500）</option>
+			</select>
+		</label>
+		<input type="submit" value="この難易度で開始">
+	</form>
+
+	<hr>
+
+	<!-- 現在の状態表示 -->
+	<h2>プレイ状況</h2>
+	<p>
+		難易度：
+		<span th:text="${currentDifficulty}">EASY</span>
+	</p>
+	<p>
+		残り回数：
+		<span th:text="${remainingTries}">10</span>
+	</p>
+	<p>
+		使用したヒント回数：
+		<span th:text="${usedHints}">0</span> / 2
+	</p>
+	<p th:if="${lastJudgeMessage != null}">
+		判定メッセージ：
+		<span th:text="${lastJudgeMessage}">ここに判定メッセージ</span>
+	</p>
+
+	<!-- 数字入力フォーム -->
+	<h2>チャレンジ</h2>
 	<form action="/challenge" method="post">
 		<p>
-			<input type="text" name="number" placeholder="いくつでしょう？">
+			<input type="number" name="number" th:attr="max=${currentDifficulty == 'EASY' ? 50 :
+				 currentDifficulty == 'NORMAL' ? 100 : 500}" min="1" placeholder="いくつでしょう？" required>
 		</p>
 		<p>
 			<input type="submit" value="トライ！">
 		</p>
 	</form>
-	<hr>
+
+	<!-- ヒントボタン -->
+	<form action="/hint" method="post">
+		<p>
+			<button type="submit" th:disabled="${usedHints} >= 2">ヒントを使う </button>
+		</p>
+	</form>
+
+	<!-- 履歴テーブル -->
+	<h2>これまでの履歴</h2>
 	<table>
 		<tr>
 			<th>回数</th>
 			<th>あなたの答え</th>
 			<th>判定</th>
 		</tr>
-		<tr th:each="h:${histories}">
+		<tr th:each="h : ${histories}">
 			<td th:text="${h.seq}"></td><!--または[[${h.seq}]]-->
 			<td th:text="${h.yourAnswer}"></td>
 			<td th:text="${h.result}"></td>
@@ -44,5 +91,11 @@
 	<p>
 		<a href="/">もう一度最初から</a>
 	</p>
+
+	<!-- ランキングへの同線 -->
+	<p>
+		<a href="/ranking">ランキングを見る</a>
+	</p>
 </body>
+
 </html>
